@@ -7,8 +7,6 @@ from app.core.config import settings
 
 
 DATABASE_URL = settings.DATABASE_URL
-
-# Special handling for SQLite to enable foreign keys and use check_same_thread False
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
 engine = create_engine(
