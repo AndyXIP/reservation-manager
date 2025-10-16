@@ -3,9 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.db.database import Base, engine
 from app.api import api_router
 
-# Import all models so they're registered with Base.metadata before creating tables
-from app.models import organization, user, resource, reservation  # noqa: F401
-
 app = FastAPI(
     title="Reservation Manager API",
     description="A simple FastAPI backend for managing reservations.",
