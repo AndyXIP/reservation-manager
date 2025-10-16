@@ -30,7 +30,7 @@ class Reservation(Base):
     guest_contact: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     resource: Mapped["Resource"] = relationship(back_populates="reservations")
-    user: Mapped["User" | None] = relationship(back_populates="reservations")
+    user: Mapped["User | None"] = relationship(back_populates="reservations")
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(

@@ -11,7 +11,7 @@ connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite")
 
 engine = create_engine(
     DATABASE_URL,
-    echo=settings.DEBUG,
+    echo=False,  # Set to True to see SQL queries in logs
     future=True,
     connect_args=connect_args,
 )

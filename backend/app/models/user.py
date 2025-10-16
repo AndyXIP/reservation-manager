@@ -22,7 +22,7 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(50), default="user")  # user|org_admin|admin
 
     organization_id: Mapped[int | None] = mapped_column(ForeignKey("organizations.id", ondelete="SET NULL"))
-    organization: Mapped["Organization" | None] = relationship(back_populates="users")
+    organization: Mapped["Organization | None"] = relationship(back_populates="users")
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
