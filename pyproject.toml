@@ -1,0 +1,9 @@
+[tool.ruff]
+line-length = 100
+fix = false
+unsafe-fixes = false
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+per-file-ignores = {"backend/tests/**" = ["F401"]}
