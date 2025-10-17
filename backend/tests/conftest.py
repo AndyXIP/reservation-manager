@@ -1,18 +1,20 @@
-import os
 import sys
 from pathlib import Path
-
-import pytest
-from app.db.database import Base, get_db
-from app.main import app
-from app.models import organization, reservation, resource, user
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 # Ensure 'backend' directory is on sys.path so 'app' package is importable
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
+
+import os  # noqa: E402
+
+import pytest  # noqa: E402
+from sqlalchemy import create_engine  # noqa: E402
+from sqlalchemy.orm import sessionmaker  # noqa: E402
+
+from app.db.database import Base, get_db  # noqa: E402
+from app.main import app  # noqa: E402
+from app.models import organization, reservation, resource, user  # noqa: E402
 
 
 @pytest.fixture(scope="session")
