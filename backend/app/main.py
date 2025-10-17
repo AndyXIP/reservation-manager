@@ -6,6 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import api_router
 from app.db.database import Base, engine
 
+from app.models import organization as _org  # noqa: F401
+from app.models import reservation as _resv  # noqa: F401
+from app.models import resource as _res  # noqa: F401
+from app.models import user as _user  # noqa: F401
+
 app = FastAPI(
     title="Reservation Manager API",
     description="A simple FastAPI backend for managing reservations.",
