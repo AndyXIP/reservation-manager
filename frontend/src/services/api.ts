@@ -30,6 +30,12 @@ export const resourceApi = {
     return api.get<Resource[]>('/resources/', { params });
   },
   get: (id: number) => api.get<Resource>(`/resources/${id}`),
+  create: (data: {
+    organization_id: number;
+    name: string;
+    type?: string;
+    capacity?: number;
+  }) => api.post<Resource>('/resources/', data),
 };
 
 // Reservations
