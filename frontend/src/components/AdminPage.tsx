@@ -138,6 +138,27 @@ export default function AdminPage() {
                   <li key={org.id}>
                     <strong>{org.name}</strong>
                     <span className="item-id">ID: {org.id}</span>
+                    <button
+                      className="btn btn-danger btn-xs"
+                      style={{ marginLeft: '1em' }}
+                      onClick={async () => {
+                        if (!confirm(`Delete organization '${org.name}'? This will also delete its resources.`)) return;
+                        setLoading(true);
+                        setError('');
+                        setSuccess('');
+                        try {
+                          await organizationApi.delete(org.id);
+                          setSuccess('Organization deleted');
+                          loadData();
+                        } catch (err: unknown) {
+                          setError('Failed to delete organization');
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -234,6 +255,27 @@ export default function AdminPage() {
                       )}
                     </div>
                     <span className="item-org">{getOrgName(resource.organization_id)}</span>
+                    <button
+                      className="btn btn-danger btn-xs"
+                      style={{ marginLeft: '1em' }}
+                      onClick={async () => {
+                        if (!confirm(`Delete resource '${resource.name}'?`)) return;
+                        setLoading(true);
+                        setError('');
+                        setSuccess('');
+                        try {
+                          await resourceApi.delete(resource.id);
+                          setSuccess('Resource deleted');
+                          loadData();
+                        } catch (err: unknown) {
+                          setError('Failed to delete resource');
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </li>
                 ))}
               </ul>

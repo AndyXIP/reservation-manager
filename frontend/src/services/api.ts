@@ -21,6 +21,7 @@ export const organizationApi = {
   list: () => api.get<Organization[]>('/organizations/'),
   get: (id: number) => api.get<Organization>(`/organizations/${id}`),
   create: (data: { name: string }) => api.post<Organization>('/organizations/', data),
+  delete: (id: number) => api.delete(`/organizations/${id}`),
 };
 
 // Resources
@@ -36,6 +37,7 @@ export const resourceApi = {
     type?: string;
     capacity?: number;
   }) => api.post<Resource>('/resources/', data),
+  delete: (id: number) => api.delete(`/resources/${id}`),
 };
 
 // Reservations
