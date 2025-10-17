@@ -1,7 +1,10 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.db.database import Base, engine
+
 from app.api import api_router
+from app.db.database import Base, engine
 
 app = FastAPI(
     title="Reservation Manager API",
@@ -23,7 +26,11 @@ app.include_router(api_router, prefix="/api")
 async def read_root():
     return {"message": "Welcome to the Reservation Manager API!"}
 
-
-@app.on_event("startup")
-def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Create tables on startup
     Base.metadata.create_all(bind=engine)
+    yield
+
+# Attach lifespan to app
+app.router.lifespan_context = lifespan

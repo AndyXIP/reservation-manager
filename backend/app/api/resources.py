@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -6,7 +7,6 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.schemas.resource import ResourceCreate, ResourceOut, ResourceUpdate
 from app.services import resource_service
-
 
 router = APIRouter(prefix="/resources", tags=["Resources"])
 

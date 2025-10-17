@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+
 class Settings:
     def __init__(self):
         backend_dir = Path(__file__).resolve().parents[2]

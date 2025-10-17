@@ -1,7 +1,11 @@
 import os
 import sys
 from pathlib import Path
+
 import pytest
+from app.db.database import Base, get_db
+from app.main import app
+from app.models import organization, reservation, resource, user
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -10,13 +14,6 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-# Import Base and FastAPI app
-from app.db.database import Base, get_db
-from app.main import app
-
-# Ensure models are imported so tables are registered
-from app.models import organization, user, resource, reservation
-
 
 @pytest.fixture(scope="session")
 def test_db_url(tmp_path_factory):
@@ -24,7 +21,6 @@ def test_db_url(tmp_path_factory):
     db_dir = tmp_path_factory.mktemp("db")
     db_path = db_dir / "test.db"
     return f"sqlite:///{db_path}"
-
 
 @pytest.fixture(scope="session")
 def engine(test_db_url):
@@ -35,11 +31,9 @@ def engine(test_db_url):
     Base.metadata.drop_all(bind=engine)
     engine.dispose()
 
-
 @pytest.fixture(scope="session")
 def TestingSessionLocal(engine):
     return sessionmaker(autocommit=False, autoflush=False, bind=engine, future=True)
-
 
 @pytest.fixture()
 def db_session(TestingSessionLocal):
@@ -48,7 +42,6 @@ def db_session(TestingSessionLocal):
         yield session
     finally:
         session.close()
-
 
 @pytest.fixture()
 def client(TestingSessionLocal):

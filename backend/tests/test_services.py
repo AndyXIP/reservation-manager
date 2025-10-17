@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
-from app.services import organization_service, resource_service, reservation_service
 from app.schemas.organization import OrganizationCreate
-from app.schemas.resource import ResourceCreate, ResourceUpdate
 from app.schemas.reservation import ReservationCreate
+from app.schemas.resource import ResourceCreate, ResourceUpdate
+from app.services import organization_service, reservation_service, resource_service
 
 
 def test_service_crud_and_conflict(db_session):

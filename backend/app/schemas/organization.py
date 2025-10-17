@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class OrganizationCreate(BaseModel):
@@ -14,6 +14,4 @@ class OrganizationUpdate(BaseModel):
 class OrganizationOut(BaseModel):
     id: int
     name: str
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

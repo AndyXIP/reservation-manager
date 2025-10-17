@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from sqlalchemy.orm import Session
-from sqlalchemy import select
-
 from app.models.resource import Resource
 from app.schemas.resource import ResourceCreate, ResourceUpdate
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 
 def create_resource(db: Session, data: ResourceCreate) -> Resource:

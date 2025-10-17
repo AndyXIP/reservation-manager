@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime
-from sqlalchemy import select, and_, or_
-from sqlalchemy.orm import Session
 
 from app.models.reservation import Reservation
 from app.schemas.reservation import ReservationCreate, ReservationUpdate
+from sqlalchemy import and_, or_, select
+from sqlalchemy.orm import Session
 
 
 def has_conflict(db: Session, resource_id: int, start: datetime, end: datetime, exclude_id: int | None = None) -> bool:

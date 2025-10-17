@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ResourceCreate(BaseModel):
@@ -22,6 +22,4 @@ class ResourceOut(BaseModel):
     name: str
     type: str | None = None
     capacity: int | None = None
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

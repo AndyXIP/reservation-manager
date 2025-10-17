@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from sqlalchemy.orm import Session
-from sqlalchemy import select
-
 from app.models.organization import Organization
 from app.schemas.organization import OrganizationCreate, OrganizationUpdate
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 
 def create_organization(db: Session, data: OrganizationCreate) -> Organization:
