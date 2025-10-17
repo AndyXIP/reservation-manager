@@ -6,7 +6,7 @@
 }
 
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #6C3BAA; /* Solid purple */
   color: white;
   padding: 1.5rem 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -94,8 +94,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #6C3BAA;
+  box-shadow: 0 0 0 3px rgba(108, 59, 170, 0.15);
 }
 
 .form-row {
@@ -121,13 +121,13 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #6C3BAA; /* Solid purple */
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(108, 59, 170, 0.4);
 }
 
 .btn-secondary {
@@ -353,7 +353,7 @@
   margin-top: 0;
   color: #444;
   font-size: 1.25rem;
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid #6C3BAA; /* Accent purple */
   padding-bottom: 0.5rem;
   margin-bottom: 1.5rem;
 }

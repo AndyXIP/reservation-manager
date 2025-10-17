@@ -24,6 +24,7 @@ Full‑stack reservation system for organizations, resources, and guest bookings
 	- [Backend Setup](#backend-setup)
 	- [Frontend Setup](#frontend-setup)
 - [Configuration](#configuration)
+- [Security and Auth](#security-and-auth)
 - [API Documentation](#api-documentation)
 - [Development Notes](#development-notes)
 - [Suggested Future Directions](#suggested-future-directions)
@@ -171,6 +172,18 @@ Frontend available at: http://localhost:5173
 
 ---
 
+## Security and Auth
+
+This demo is intentionally unauthenticated to keep the flow simple. Admin actions (creating/deleting organizations and resources) are available from the UI for demonstration.
+
+Future upgrades (for professional/deployment app):
+- JWT-based auth (OAuth2PasswordBearer + PyJWT, hashed passwords via Passlib)
+- Hosted auth (Auth0/Clerk) with backend JWT verification
+- Session cookies with CSRF for form posts
+- CORS limited to specific addresses
+
+---
+
 ## API Documentation
 
 - **Swagger UI:** http://localhost:8000/docs
@@ -193,6 +206,7 @@ Frontend available at: http://localhost:5173
 - Booking page (`/`) for guest reservations
 - Reservations page (`/reservations`) for search/manage
 - CORS enabled for local dev
+- No auth by design for demo simplicity; see [Security and Auth](#security-and-auth)
 - All backend endpoints tested with pytest
 - Linting with Ruff (`ruff check ..`)
 - CI: `.github/workflows/backend.yml` (lint + test jobs)
