@@ -150,7 +150,7 @@ export default function AdminPage() {
                           await organizationApi.delete(org.id);
                           setSuccess('Organization deleted');
                           loadData();
-                        } catch (err: unknown) {
+                        } catch {
                           setError('Failed to delete organization');
                         } finally {
                           setLoading(false);
@@ -267,7 +267,7 @@ export default function AdminPage() {
                           await resourceApi.delete(resource.id);
                           setSuccess('Resource deleted');
                           loadData();
-                        } catch (err: unknown) {
+                        } catch {
                           setError('Failed to delete resource');
                         } finally {
                           setLoading(false);
