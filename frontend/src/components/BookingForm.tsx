@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { format } from 'date-fns';
 import { resourceApi, reservationApi } from '../services/api';
-import type { Resource, CreateReservation } from '../types/api';
+import type { Resource, CreateReservation, Reservation } from '../types/api';
 
 interface BookingFormProps {
   onSuccess?: () => void;
@@ -13,6 +13,9 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [dayReservations, setDayReservations] = useState<Reservation[]>([]);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
+  const [scheduleError, setScheduleError] = useState('');
 
   const [formData, setFormData] = useState({
     resource_id: '',
@@ -37,6 +40,41 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
       setError('Failed to load resources');
     }
   };
+
+  // Load reservations for selected resource and date (day view)
+  const loadDayReservations = async () => {
+    // Only fetch when a resource and date are selected
+    if (!formData.resource_id || !formData.date) {
+      setDayReservations([]);
+      return;
+    }
+    setScheduleLoading(true);
+    setScheduleError('');
+    try {
+      const start = `${formData.date}T00:00:00`;
+      const end = `${formData.date}T23:59:59`;
+      const res = await reservationApi.list({
+        resource_id: parseInt(formData.resource_id),
+        start,
+        end,
+      });
+      // Sort by start time ascending
+      const sorted = [...res.data].sort(
+        (a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
+      );
+      setDayReservations(sorted);
+    } catch {
+      setScheduleError('Failed to load schedule');
+    } finally {
+      setScheduleLoading(false);
+    }
+  };
+
+  // Refresh schedule when resource/date changes
+  useEffect(() => {
+    loadDayReservations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.resource_id, formData.date]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -71,6 +109,8 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
       });
 
       if (onSuccess) onSuccess();
+      // Reload day schedule to reflect the new booking
+      loadDayReservations();
     } catch (err: unknown) {
       const errorMessage = err && typeof err === 'object' && 'response' in err
         ? (err as { response?: { data?: { detail?: string } } }).response?.data?.detail || 'Failed to create reservation'
@@ -192,6 +232,72 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
           {loading ? 'Creating...' : 'Create Reservation'}
         </button>
       </form>
+
+      {/* Day schedule preview */}
+      <div className="day-schedule">
+        <h3>Schedule for {formData.date || 'selected date'}</h3>
+        {!formData.resource_id ? (
+          <p className="no-data">Select a resource to see the schedule.</p>
+        ) : scheduleLoading ? (
+          <p>Loading schedule…</p>
+        ) : scheduleError ? (
+          <div className="alert alert-error">{scheduleError}</div>
+        ) : dayReservations.length === 0 ? (
+          <p className="no-data">No reservations for this day.</p>
+        ) : (
+          <>
+            {/* Timeline header ticks */}
+            <div className="timeline-header">
+              {['00:00','04:00','08:00','12:00','16:00','20:00','24:00'].map((t) => (
+                <span key={t} className="timeline-tick">{t}</span>
+              ))}
+            </div>
+            {/* Timeline track */}
+            <div className="timeline-track">
+              {dayReservations.map((r) => {
+                const dayStart = new Date(`${formData.date}T00:00:00`);
+                const startMs = new Date(r.start_time).getTime() - dayStart.getTime();
+                const endMs = new Date(r.end_time).getTime() - dayStart.getTime();
+                const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
+                const startMin = clamp(Math.floor(startMs / 60000), 0, 1440);
+                const endMin = clamp(Math.ceil(endMs / 60000), 0, 1440);
+                const leftPct = (startMin / 1440) * 100;
+                const widthPct = Math.max(1.5, ((endMin - startMin) / 1440) * 100); // ensure a visible min width
+                return (
+                  <div
+                    key={r.id}
+                    className={`timeline-block status-${r.status}`}
+                    style={{ left: `${leftPct}%`, width: `${widthPct}%` }}
+                    title={`${format(new Date(r.start_time), 'HH:mm')}–${format(new Date(r.end_time), 'HH:mm')} · ${r.guest_last_name}${r.guest_first_name ? `, ${r.guest_first_name}` : ''}`}
+                  >
+                    <span className="timeline-label">
+                      {format(new Date(r.start_time), 'HH:mm')}–{format(new Date(r.end_time), 'HH:mm')} · {r.guest_last_name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Also show as list for accessibility */}
+            <ul className="schedule-list" aria-label="Day schedule list">
+              {dayReservations.map((r) => (
+                <li key={r.id} className={`schedule-item status-${r.status}`}>
+                  <div className="schedule-time">
+                    {format(new Date(r.start_time), 'HH:mm')}–{format(new Date(r.end_time), 'HH:mm')}
+                  </div>
+                  <div className="schedule-meta">
+                    <strong>{r.guest_last_name}{r.guest_first_name ? `, ${r.guest_first_name}` : ''}</strong>
+                    {r.notes && <span className="schedule-notes"> · {r.notes}</span>}
+                  </div>
+                  <span className={`status-badge ${r.status === 'cancelled' ? 'status-cancelled' : r.status === 'pending' ? 'status-pending' : 'status-confirmed'}`}>
+                    {r.status}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
     </div>
   );
 }
