@@ -49,8 +49,11 @@ export default function AdminPage() {
       setSuccess('Organization created successfully!');
       setOrgName('');
       loadData();
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to create organization');
+    } catch (err: unknown) {
+      const errorMessage = err && typeof err === 'object' && 'response' in err
+        ? (err as { response?: { data?: { detail?: string } } }).response?.data?.detail || 'Failed to create organization'
+        : 'Failed to create organization';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -79,8 +82,11 @@ export default function AdminPage() {
         capacity: '',
       });
       loadData();
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to create resource');
+    } catch (err: unknown) {
+      const errorMessage = err && typeof err === 'object' && 'response' in err
+        ? (err as { response?: { data?: { detail?: string } } }).response?.data?.detail || 'Failed to create resource'
+        : 'Failed to create resource';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

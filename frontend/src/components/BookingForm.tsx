@@ -33,7 +33,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
     try {
       const response = await resourceApi.list();
       setResources(response.data);
-    } catch (err) {
+    } catch {
       setError('Failed to load resources');
     }
   };
@@ -71,8 +71,10 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
       });
 
       if (onSuccess) onSuccess();
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || 'Failed to create reservation';
+    } catch (err: unknown) {
+      const errorMessage = err && typeof err === 'object' && 'response' in err
+        ? (err as { response?: { data?: { detail?: string } } }).response?.data?.detail || 'Failed to create reservation'
+        : 'Failed to create reservation';
       setError(errorMessage);
     } finally {
       setLoading(false);

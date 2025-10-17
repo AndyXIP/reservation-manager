@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
 import { reservationApi, resourceApi } from '../services/api';
 import type { Reservation, Resource } from '../types/api';
@@ -11,36 +11,36 @@ export default function ReservationsList() {
   const [searchLastName, setSearchLastName] = useState('');
   const [filterResourceId, setFilterResourceId] = useState('');
 
-  useEffect(() => {
-    loadResources();
-    loadReservations();
-  }, []);
-
-  const loadResources = async () => {
+  const loadResources = useCallback(async () => {
     try {
       const response = await resourceApi.list();
       setResources(response.data);
     } catch (err) {
       console.error('Failed to load resources', err);
     }
-  };
+  }, []);
 
-  const loadReservations = async () => {
+  const loadReservations = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const params: any = {};
+      const params: Record<string, string | number> = {};
       if (searchLastName) params.guest_last_name = searchLastName;
       if (filterResourceId) params.resource_id = parseInt(filterResourceId);
 
       const response = await reservationApi.list(params);
       setReservations(response.data);
-    } catch (err) {
+    } catch {
       setError('Failed to load reservations');
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchLastName, filterResourceId]);
+
+  useEffect(() => {
+    loadResources();
+    loadReservations();
+  }, [loadResources, loadReservations]);
 
   const handleCancel = async (id: number) => {
     if (!confirm('Are you sure you want to cancel this reservation?')) return;
@@ -48,7 +48,7 @@ export default function ReservationsList() {
     try {
       await reservationApi.cancel(id);
       loadReservations(); // Reload list
-    } catch (err) {
+    } catch {
       alert('Failed to cancel reservation');
     }
   };
@@ -59,7 +59,7 @@ export default function ReservationsList() {
     try {
       await reservationApi.delete(id);
       loadReservations(); // Reload list
-    } catch (err) {
+    } catch {
       alert('Failed to delete reservation');
     }
   };
