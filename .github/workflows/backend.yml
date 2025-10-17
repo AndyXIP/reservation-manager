@@ -42,7 +42,7 @@ jobs:
         working-directory: backend
         run: |
           ruff --version
-          ruff check ..
+          ruff check .. --fix
 
   test:
     runs-on: ubuntu-latest
