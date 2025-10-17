@@ -219,6 +219,7 @@ Future upgrades (for professional/deployment app):
 - Edit/update UI for orgs/resources/reservations
 - Alembic migrations (currently using `create_all()`)
 - Calendar/availability views on frontend
+- Update backend conflict logic so only active (not cancelled) reservations block new bookings (currently, cancelled reservations may still block timeslots)
 - Coverage reports in CI, type checking (mypy), deployment guides
 
 ---
